@@ -9,6 +9,7 @@ from datetime import timedelta
 
 root=r'./datas_person'
 register_path=r'./datas_person/register'
+id_md5s=r'./datas_person/id_md5s'
 
 if not os.path.exists(root):
     os.mkdir(root)
@@ -75,3 +76,13 @@ def print_register():
         register=pickle.load(f)
     for k,v in register.items():
         print(f'{k} : {v}')
+
+def get_id_md5s():
+    id_md5s={}
+    for id_md5 in ids:
+        with open(root+os.sep+id_md5,'rb') as f:
+            signer=pickle.load(f)
+            id_md5s[id_md5]=signer['ID']
+    with open(id_md5s,'wb') as f:
+        pickle.dump(id_md5s,f)
+

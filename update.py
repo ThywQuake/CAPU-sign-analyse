@@ -68,9 +68,12 @@ def update():
 def get_data_for_person(date:datetime):
     signs=get_data_from_date(date)
     path_r=person_root+os.sep+'register'
+    path_md5=person_root+os.sep+'id_md5s'
     with open(path_r,'rb') as register_f:
         register=pickle.load(register_f)
         register[date]=[]
+    with open(path_md5,'rb') as id_f:
+        id_md5s=pickle.load(id_f)
     for id in signs.keys():
         id_md5=hashlib.md5(id.encode('utf-8')).hexdigest()
         path=person_root+os.sep+id_md5
@@ -79,8 +82,8 @@ def get_data_for_person(date:datetime):
             signer[date]=signs[id]
             with open(path,'wb') as f:
                 pickle.dump(signer,f)
-            path_r=person_root+os.sep+'register'
-            register[date].append(id) 
+            register[date].append(id)
+            id_md5s[id_md5]=id
         else:
             with open(path,'rb') as f:
                 signer=pickle.load(f)
@@ -89,7 +92,9 @@ def get_data_for_person(date:datetime):
                 pickle.dump(signer,f)
     with open(path_r,'wb') as f:
         pickle.dump(register,f)
-    
+    with open(path_md5,'wb') as f:
+        pickle.dump(id_md5s,f)
+        
 def get_data_for_person_over_days(start_date,end_date):
     current_date=start_date
     while current_date!=end_date:
