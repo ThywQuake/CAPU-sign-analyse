@@ -12,12 +12,15 @@ import matplotlib.pyplot as plt
 import update as upd
 
 matplotlib.rc("font", family='DengXian')
-root = r'C:\Users\AnotherMe\Documents\PythonScripts\datas_daily'
+root = r'./datas_daily'
 _format= '%Y-%m-%d'
-save_path=r"C:\Users\Public\Pictures"
-csv_path=r"C:\Users\AnotherMe\Documents\PythonScripts\csv\datas.csv"
-person_root=r'C:\Users\AnotherMe\Documents\PythonScripts\datas_person'
+save_path=r"./Pictures"
+person_root=r'./datas_person'
 
+dirs=[root,save_path,person_root]
+for dir in dirs:
+    if not os.path.exists(dir):
+        os.mkdir(dir)
 
 def is_valid_date(datestr: str):
     try:
@@ -262,8 +265,11 @@ class RegisterAnalyse():
         with open(path, 'rb') as f:
             signer = pickle.load(f)
         signer.pop('ID')
+        for date,rank in signer.items():
+            if rank==0:
+                signer.pop(date)
         return min(signer.keys()), max(signer.keys())
-    
+        
     def get_life_span(self,ID):
         register_date,latest_date=self.get_register_date_and_latest_date(ID)
         if register_date==-1:
